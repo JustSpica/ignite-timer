@@ -23,6 +23,10 @@ export const RootHeader = styled.header`
 
         color: ${theme["gray-100"]};
 
+        &.active {
+          color: ${theme["green-500"]};
+        }
+
         &:hover {
           border-bottom: 3px solid ${theme["green-500"]};
         }
