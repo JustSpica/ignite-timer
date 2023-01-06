@@ -15,6 +15,7 @@ export interface NewCycleFormData {
 }
 
 interface CyclesContextProps {
+  cycles: CycleProps[];
   activeCycle: CycleProps | undefined;
   activeCycleId: string | null;
   secondsPassed: number;
@@ -70,7 +71,7 @@ export function CyclesProvider({ children }: CyclesProviderProps) {
   }
 
   function createNewCycle(data: NewCycleFormData) {
-    const duration = data.minutesAmount;
+    const duration = data.minutesAmount * 60;
 
     const newCycle: CycleProps = {
       id: String(Date.now()),
@@ -87,6 +88,7 @@ export function CyclesProvider({ children }: CyclesProviderProps) {
   return (
     <CyclesContext.Provider
       value={{
+        cycles,
         activeCycle,
         activeCycleId,
         secondsPassed,
