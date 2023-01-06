@@ -1,45 +1,60 @@
 import React from "react";
-import { Play } from "phosphor-react";
+import { useForm, FormProvider } from "react-hook-form";
+import { HandPalm, Play } from "phosphor-react";
+
+import { useCycles, NewCycleFormData } from "context/CycleContext";
+
+import { Form } from "./components/Form";
+import { Countdown } from "./components/Countdown";
 
 import * as Styled from "./styles";
 
 export function Home() {
+  const newCycleForm = useForm<NewCycleFormData>({
+    defaultValues: {
+      minutesAmount: 0,
+      task: "",
+    },
+  });
+
+  const { activeCycle, interruptCurrentCycle, createNewCycle } = useCycles();
+
+  const { handleSubmit, watch, reset } = newCycleForm;
+
+  function handleCreateNewCycle(data: NewCycleFormData) {
+    createNewCycle(data);
+    reset();
+  }
+
+  const task = watch("task");
+  const isSubmitDisabled = !task;
+
+  const isThereAnActiveCycle = !!activeCycle;
+
   return (
     <Styled.RootHome>
-      <form>
-        <Styled.FormContainer>
-          <label htmlFor="task">Vou trabalhar em</label>
-          <Styled.TaskInput
-            id="task"
-            type="text"
-            placeholder="Dê um nome para o seu projeto"
-          />
-
-          <label htmlFor="minutesAmount">durante</label>
-          <Styled.MinutesAmountInput
-            id="minutesAmount"
-            type="number"
-            placeholder="00"
-            step={5}
-            min={5}
-            max={60}
-          />
-
-          <span>minutos.</span>
-        </Styled.FormContainer>
-
-        <Styled.CountdownContainer>
-          <span>0</span>
-          <span>0</span>
-          <Styled.CountdownDivider>:</Styled.CountdownDivider>
-          <span>0</span>
-          <span>0</span>
-        </Styled.CountdownContainer>
-
-        <Styled.StartCountdownButton type="submit">
-          <Play size={24} />
-          Começar
-        </Styled.StartCountdownButton>
+      <form onSubmit={handleSubmit(handleCreateNewCycle)}>
+        <FormProvider {...newCycleForm}>
+          <Form disabled={isThereAnActiveCycle} />
+        </FormProvider>
+        <Countdown />
+        {isThereAnActiveCycle ? (
+          <Styled.StopCountdownButton
+            type="button"
+            onClick={interruptCurrentCycle}
+          >
+            <HandPalm size={24} />
+            Interromper
+          </Styled.StopCountdownButton>
+        ) : (
+          <Styled.StartCountdownButton
+            disabled={isSubmitDisabled}
+            type="submit"
+          >
+            <Play size={24} />
+            Começar
+          </Styled.StartCountdownButton>
+        )}
       </form>
     </Styled.RootHome>
   );
