@@ -32,11 +32,9 @@ export function Countdown() {
         );
 
         if (secondsDifference >= activeCycle.duration) {
-          console.log("aqui 01");
           markCurrentCycleAsFinished();
           setSecondsAmountPassed(activeCycle.duration);
         } else {
-          console.log("aqui 02");
           setSecondsAmountPassed(secondsDifference);
         }
       }, 1000);
